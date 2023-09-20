@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tickets
+  template:
+    metadata:
+      labels:
+        app: tickets
+    spec:
+      containers:
+        - name: tickets
+          image: gkhunashvili109/tickets
+          ports:
+            - containerPort: 8001
+          env:
+            - name: MONGODB_URL
+              value: mongodb://tickets-mongo-srv:27017
+            - name: ALGORITHM
+              value: HS256
+            - name: ENVIRONMENT
+              value: dev
+            - name: DATABASE_NAME
+              value: tickets
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY

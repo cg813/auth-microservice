@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+        - name: auth
+          image: gkhunashvili109/auth
+          ports:
+            - containerPort: 8000
+          env:
+            - name: MONGODB_URL
+              value: mongodb://auth-mongo-srv:27017
+            - name: ALGORITHM
+              value: HS256
+            - name: ENVIRONMENT
+              value: dev
+            - name: DATABASE_NAME
+              value: users
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
